@@ -24,9 +24,8 @@ function GetVM {
     }
         
    $vmi = Read-Host -Prompt "What VM would you like as your base ?"
-   $vm = Get-VM -Name $vmi
     try {
-        Get-VM -Name $vmi -ErrorAction Stop
+       $vm = Get-VM -Name $vmi -ErrorAction Stop
         Write-Host "Valid VM Name"
     }
     catch {
@@ -56,6 +55,7 @@ catch {
 }
 return $snapshot    
 }
+
 function Gethost {
 #Get vmhost
 
@@ -101,9 +101,9 @@ function GetVMType {
 $type = Read-Host -Prompt "For a Full clone enter [F] for a Linked clone enter [L]"
 
 if ($type -eq "L"){
-    $choice = "Linked"
+    $choice = "L"
 }elseif ($type -eq "F") {
-    $choice = "Full"
+    $choice = "F"
 }else {
     Write-Host "Invlaid Choice" -ForegroundColor Red
     Choose_Type
@@ -112,17 +112,17 @@ if ($type -eq "L"){
 return $choice
 }
 
-function FullClone ($vm, $snapshot, $vmhost, $ds, $NVMName){
+function FullClone ($vm, $snapshot, $vmhost, $ds, $Name){
     
     #Get Linked name
     $linkedname = "{0}.linked" -f $vm.name
     #Create Linked VM
-        
-    $linkedvm = New-VM -LinkedClone -Name $linkedname -VM $vm -ReferenceSnapshot $snapshot -VMHost $vmhost -Datastore $ds
+     Write-Host $vm   
+    $linkedvm = New-VM -LinkedClone -Name $linkedname -vm $vm -ReferenceSnapshot $snapshot -VMHost $vmhost -Datastore $ds
         
     #Create New VM
     try{
-        New-VM -Name $NVMName -VM $linkedvm -VMHost $vmhost -Datastore $ds -ErrorAction Stop
+        New-VM -Name $Name -VM $linkedvm -VMHost $vmhost -Datastore $ds -ErrorAction Stop
         Write-Host "New VM created"
     }
     catch {
@@ -132,7 +132,7 @@ function FullClone ($vm, $snapshot, $vmhost, $ds, $NVMName){
     $del = Read-Host "Would you like to delete the temporary clone $linkedvm? [Y]/[N]"
     if ($del -eq "Y"){
         try {
-            Remove-VM -Name $linkedvm -ErrorAction Stop
+            Remove-VM -VM $linkedvm -ErrorAction Stop
             Write-Host "Temp Clone Deleted"
         }
         catch {
@@ -144,19 +144,20 @@ function FullClone ($vm, $snapshot, $vmhost, $ds, $NVMName){
     }  
     
 }
-function LinkedClone ($vm, $snapshot, $vmhost, $ds, $NVMName){
-    try {New-VM -LinkedClone -Name $NVMName -VM $vm -ReferenceSnapshot $snapshot -VMHost $vmhost -Datastore $ds -ErrorAction Stop
-        Write-Host "Linked Clone Created" 
+function LinkedClone ($vm, $snapshot, $vmhost, $ds, $Name){
+    
+   try {New-VM -LinkedClone -Name $Name -VM $vm -ReferenceSnapshot $snapshot -VMHost $vmhost -Datastore $ds -ErrorAction Stop
+       Write-Host "Linked Clone Created" 
+       exit
 
     }
-catch {
+  catch {
     Write-Host "Could not create Linked clone" -ForegroundColor Red
-    LinkedClone
-}
+    
+    }
 }
 function Creation {
     ConnectServer
-    Write-Host "Welcome to the Clone creator"
     $vm = GetVM
     $snapshot = GetSnap -vmi $vm
     $vmhost = Gethost
@@ -164,10 +165,10 @@ function Creation {
     $NVMName = NewVMName
     $choice = GetVMType
     if($choice -eq "L"){
-        LinkedClone -name $NVMName -vm $vm -VMHost $vmhost -data $ds -ReferenceSnapshot $snap
+        LinkedClone -Name $NVMName -vm $vm -VMHost $vmhost -ds $ds -snapshot $snapshot
     }
-    elseif ($choice -eq "F") {
-        FullClone -name $NVMName -vm $vm -VMHost $vmhost -data $ds -ReferenceSnapshot $snap
+    elseif ($choice -eq "F"){
+        FullClone -Name $NVMName -vm $vm -VMHost $vmhost -ds $ds -snapshot $snapshot
         
     }
     
