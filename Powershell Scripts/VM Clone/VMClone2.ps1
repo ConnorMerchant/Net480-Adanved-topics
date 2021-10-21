@@ -148,7 +148,7 @@ function LinkedClone ($vm, $snapshot, $vmhost, $ds, $Name){
     
    try {New-VM -LinkedClone -Name $Name -VM $vm -ReferenceSnapshot $snapshot -VMHost $vmhost -Datastore $ds -ErrorAction Stop
        Write-Host "Linked Clone Created" 
-       exit
+       
 
     }
   catch {
@@ -171,6 +171,15 @@ function Creation {
         FullClone -Name $NVMName -vm $vm -VMHost $vmhost -ds $ds -snapshot $snapshot
         
     }
-    
-}
+    $power = Read-Host -Prompt "Do you want to start the new VM? [Y]/[N]"
+    if ($power -eq "Y"){
+        Start-VM -VM $NVMName
+        Write-Host "The VM has been created and is powered on" -ForegroundColor Green
+    }
+    else {
+        Write-Host "The VM has been created and is not powered on"
+    }
+        
+    }
+
 Creation
