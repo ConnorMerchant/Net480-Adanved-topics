@@ -2,7 +2,11 @@
 #
 # Creates a clone based on given inputs and also give the ability to delete VMs 
 # Error reporting if something is wrong
+#
 
+#Credit
+# Sam Johnson Helped very much with troubleshooting as well as helped explain issues I had 
+# with passing variables between functions
 
 
 function ConnectServer {
