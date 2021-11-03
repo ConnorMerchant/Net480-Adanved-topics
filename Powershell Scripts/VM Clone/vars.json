@@ -1,9 +1,9 @@
 {
     "vcenter" : "super2.cyber.local",
-    "basevm" : "vyos-base",
+    "basevm" : "xubuntu-wan-base",
     "snapshot" : "Base",
     "VMHost" : "192.168.3.12",
     "datastore"  : "datastore2-super2",
-    "network" : "480-WAN",
+    "network" : "Blue2-WAN",
     "adapter" : "Network adapter 1"
 }

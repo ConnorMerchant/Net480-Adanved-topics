@@ -263,6 +263,7 @@ function getIP ($name){
     Write-Host $form
 }
 
+
 function PowerVM ($VMName){
 
     start-VM -VM $VMName 
