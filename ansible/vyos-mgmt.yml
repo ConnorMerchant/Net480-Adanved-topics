@@ -1,0 +1,50 @@
+#Playbook for post provisioning of vyos mgmt
+- name: vyos network config
+  hosts: vyos
+  tasks:
+  - name: Retrieve VyOS version info
+    vyos_command:
+      commands: show version
+    register: version
+  - debug:
+      var: version.stdout_lines
+
+  - name: configure vyos zones
+    vyos_config: 
+      save: yes
+      lines:
+      - set service dhcp-server global-parameters 'local-address {{ lan_ip }};'
+      - set service dhcp-server shared-network-name {{ shared_network }} authoritative
+      - set service dhcp-server shared-network-name {{ shared_network }} subnet {{ lan }} default-router '{{lan_ip}}'
+      - set service dhcp-server shared-network-name {{ shared_network }} subnet {{ lan }} dns-server '{{ dhcp_name_server}}'
+      - set service dhcp-server shared-network-name {{ shared_network }} subnet {{ lan }} domain-name '{{ dhcp_domain }}'
+      - set service dhcp-server shared-network-name {{ shared_network }} subnet {{ lan }} lease '86400'
+      - set service dhcp-server shared-network-name {{ shared_network }} subnet {{ lan }} range {{ shared_network }}-POOL start '10.0.12.75'
+      - set service dhcp-server shared-network-name {{ shared_network }} subnet {{ lan }} range {{ shared_network }}-POOL stop '10.0.12.150'
+      - set zone-policy zone WAN interface eth0
+      - set zone-policy zone MGMT interface eth1
+#      - set zone-policy zone BLUE interface eth2
+      - set firewall name MGMT-to-WAN default-action drop
+      - set firewall name WAN-to-MGMT default-action drop
+#      - set firewall name BLUE-to-MGMT default-action drop
+#      - set firewall name MGMT-to-BLUE default-action drop
+      - set zone-policy zone MGMT from WAN firewall name WAN-to-MGMT
+      - set zone-policy zone WAN from MGMT firewall name MGMT-to-WAN
+#      - set zone-policy zone BLUE from MGMT firewall name MGMT-to-BLUE
+#      - set zone-policy zone MGMT from BLUE firewall name BLUE-to-MGMT
+      - set firewall name WAN-to-MGMT rule 1 action accept
+      - set firewall name WAN-to-MGMT rule 1 state established enable
+      - set firewall name WAN-to-MGMT rule 10 action accept
+      - set firewall name WAN-to-MGMT rule 10 protocol icmp
+      - set firewall name WAN-to-MGMT rule 10 source address 10.0.17.100
+      - set firewall name MGMT-to-WAN rule 10 action accept
+#      - set firewall name MGMT-to-BLUE rule 10 action accept
+#      - set firewall name BLUE-to-MGMT rule 10 action accept
+  #    - set
+  #    - set
+  #    - set
+  #    - set
+  #    - set
+  #    - set
+  #    - set
+
