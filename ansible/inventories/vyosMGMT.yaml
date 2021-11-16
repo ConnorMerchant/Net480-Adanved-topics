@@ -2,11 +2,15 @@ vyos:
   hosts:
     10.0.17.101:
       hostname: MGMT-FW
+      wan_ip: 10.0.17.101
+      wan: 10.0.17.0/24
       lan_ip: 10.0.12.2   
       lan: 10.0.12.0/24
+      gateway: 10.0.12.2
       dhcp_name_server: 10.0.12.5
       shared_network: Blue-MGMT
       dhcp_domain: mgmt.local
+      name_server: 10.0.12.5
   vars:
     ansible_python_interpreter: /usr/bin/python3
     ansible_connection: network_cli
