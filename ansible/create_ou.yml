@@ -1,0 +1,25 @@
+## Based on NT weeklys guide 
+---
+-  name: "Create OU"
+   hosts: windows
+   tasks:
+   - win_shell: install-packageprovider -name nuget -force
+   - name: "Install XactiveDirectory"
+     win_psmodule:
+        name: ActiveDirectoryDSC
+        state: present
+   - name: "Create OU"
+     win_dsc:
+        resource_name: ADOrganizationalUnit
+        name: "{{item.name}}"
+        path:  "{{item.path}}"
+     loop:
+      - { name: 'blue2', path: 'DC=blue2,DC=local' }
+      - { name: 'Accounts', path: 'OU=blue2,DC=blue2,DC=local' }
+      - { name: 'Groups', path: 'OU=Accounts,OU=blue2,DC=blue2,DC=local' }
+      - { name: 'Computers', path: 'OU=blue2,DC=blue2,DC=local' }
+      - { name: 'Servers', path: 'OU=Computers,OU=blue2,DC=blue2,DC=local' }
+      - { name: 'Workstations', path: 'OU=Computers,OU=blue2,DC=blue2,DC=local' }
+
+
+ 

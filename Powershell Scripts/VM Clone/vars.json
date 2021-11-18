@@ -1,9 +1,9 @@
 {
     "vcenter" : "super2.cyber.local",
-    "basevm" : "vyos-base",
+    "basevm" : "Windows-SRV-Core",
     "snapshot" : "Base",
     "VMHost" : "192.168.3.12",
     "datastore"  : "datastore2-super2",
-    "network" : "Blue-MGMT",
+    "network" : "Blue2-LAN",
     "adapter" : "Network adapter 1"
 }

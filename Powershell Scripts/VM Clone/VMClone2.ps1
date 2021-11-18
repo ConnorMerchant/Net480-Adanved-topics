@@ -258,11 +258,11 @@ function getIP ($name){
     $vm = Get-VM -Name $name
     $ip = $vm.guest.IPAddress[0]
     $hostname = $vm.guest.VmName
-    $form = "$ip hostname=$hostname"
+    $mac = ($vm | Get-NetworkAdapter)[0].MacAddress
+    $form = "$ip hostname=$hostname $mac"
 
     Write-Host $form
 }
-
 
 function PowerVM ($VMName){
 
