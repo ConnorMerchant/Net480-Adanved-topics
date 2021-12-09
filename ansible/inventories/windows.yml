@@ -5,6 +5,24 @@ windows:
       hosts:
         10.0.5.5:
           hostname: dc-blue2
+        10.0.5.6:
+          hostname: fs02
+      vars:
+        domain_ou_path: "OU=Servers,OU=Computers,OU=blue2,DC=blue2,DC=local"
+        ansible_shell_type: powershell
+        accounts_ou: "OU=Accounts,OU=Blue2,DC=blue2,DC=local"
+        groups_ou: "OU=Groups,OU=Accounts,OU=blue2,DC=blue2,DC=local"
+        ansible_user: Administrator@blue2.local
+    workstation:
+      hosts:
+        10.0.5.84:
+          hostname: blue2-wks2
+        
+        10.0.5.83:
+          hostname: blue2-wks
+      vars:
+        domain_ou_path: "OU=Workstations,OU=Computers,OU=blue2,DC=blue2,DC=local"
+        ansible_shell_type: powershell
   vars:
     ansible_user: deployer
     device: Ethernet0
@@ -13,3 +31,4 @@ windows:
     name_server: 10.0.5.5
     domain: blue2.local
     ansible_shell_type: powershell
+    base_dc: blue2

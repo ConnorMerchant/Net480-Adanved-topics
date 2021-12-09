@@ -1,0 +1,47 @@
+---
+- name: install software
+  hosts: workstation
+  gather_facts: no
+  tasks: 
+  - name: create 480 directory
+    win_file:
+      path: C:\480
+      state: directory
+
+  - name: copy chrome msi
+    win_copy:
+      src: GoogleChromeStandaloneEnterprise64.msi
+      dest: C:\480\googlechromestandaloneenterprise64.msi
+
+  - name: copy 7zip
+    win_copy: 
+      src: 7z2106-x64.msi
+      dest: C:\480\7z2106-x64.msi
+
+  - name: copy Openvpn 
+    win_copy:
+      src: openvpn-connect-3.3.3.2562_signed.msi
+      dest: C:\480\openvpn-connect-3.3.3.2562_signed.msi
+
+  - name: install Chrome
+    win_package:
+      path: C:\480\GoogleChromeStandaloneEnterprise64.msi
+      wait: yes
+      state: present
+
+  - name: install 7zip
+    win_package:
+      path: C:\480\7z2106-x64.msi
+      wait: yes
+      state: present
+
+  - name: install Openvpn
+    win_package:
+      path: C:\480\openvpn-connect-3.3.3.2562_signed.msi
+      wait: yes
+      state: present
+
+  - name: cleanup 480 directory
+    win_file:
+      path: C:\480
+      state: absent

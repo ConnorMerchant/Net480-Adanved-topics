@@ -1,0 +1,20 @@
+---
+- name: windows remote access
+  hosts: workstation
+  gather_facts: no
+  tasks: 
+  - name: Gotta go fast
+    win_power_plan:
+      name: high performance
+
+  - name: Add admins to RDP
+    win_group_membership:
+      name: Remote Desktop Users
+      members: Blue2\Domain Admins
+      state: present
+
+  - name: Enable RDP
+    win_shell: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -name "fDenyTSConnections" -Value 0
+    
+  - name: Firewall Open for RDP
+    win_shell: Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
